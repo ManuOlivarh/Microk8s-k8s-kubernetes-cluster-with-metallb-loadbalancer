@@ -1,0 +1,48 @@
+
+NUM_MASTER_NODE = 1
+NUM_WORKER_NODE = 2
+
+IP_NW = '192.168.5.'
+MASTER_IP_START = 10
+NODE_IP_START = 20
+LB_IP_START = 30
+VAGRANT_BOX = 'generic/ubuntu2004' ;
+
+PROVIDER = ENV['VAGRANT_DEFAULT_PROVIDER'].nil? ? 'virtualbox' : ENV['VAGRANT_DEFAULT_PROVIDER']
+
+Vagrant.configure('2') do |config|
+  config.vm.box_check_update = false
+  config.vm.box = VAGRANT_BOX
+  config.vm.box_version = "3.1.16"
+  # Provision controller nodes
+  (1..NUM_MASTER_NODE).each do |i|
+    config.vm.define "controller-#{i}" do |node|
+      node.vm.network :forwarded_port, guest: 6443, host: 6443
+      node.vm.provider PROVIDER do |vb|
+        vb.memory = 2048
+        vb.cpus = 2
+      end
+      node.vm.hostname = "controller-#{i}"
+      node.vm.network :private_network, ip: "#{IP_NW}#{MASTER_IP_START + i}"
+      node.vm.provision 'install-tools',
+      type: 'shell',
+      path: 'bootstrap.sh'
+    end
+  end
+
+  # Provision Worker Nodes
+  (1..NUM_WORKER_NODE).each do |i|
+    config.vm.define "worker-#{i}" do |node|
+      node.vm.provider PROVIDER do |vb|
+        vb.memory = 512
+        vb.cpus = 1
+
+      end
+      node.vm.hostname = "worker-#{i}"
+      node.vm.network :private_network, ip: "#{IP_NW}#{NODE_IP_START + i}"
+      node.vm.provision 'install-tools',
+      type: 'shell',
+      path: 'bootstrap.sh'
+    end
+  end
+end
