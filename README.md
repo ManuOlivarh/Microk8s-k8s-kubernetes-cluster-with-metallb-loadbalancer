@@ -55,10 +55,12 @@ microk8s join 10.23.209.1:25000/92b2db237428470dc4fcfc4ebbd9dc81/2c0cb3284b05
 microk8s join 172.17.0.1:25000/92b2db237428470dc4fcfc4ebbd9dc81/2c0cb3284b05
 ```
 
-en nuestro ###nodo worker### debemos correr el comando generado "microk8s join" para poder unir el worker al master, cabe destacar que hay añadir la etiqueta "--worker"
+en nuestro ###nodo worker debemos correr el comando generado "microk8s join" para poder unir el worker al master, cabe destacar que hay añadir la etiqueta "--worker"
 
+
+```bash
 microk8s join 192.168.1.230:25000/92b2db237428470dc4fcfc4ebbd9dc81/2c0cb3284b05 --worker
-
+```
 
 
 ### -Opcional-  Acceder al dashboard
