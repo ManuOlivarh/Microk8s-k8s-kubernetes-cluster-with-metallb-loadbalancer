@@ -12,13 +12,56 @@ En entornos de nube tradicionales , donde los balanceadores de carga están disp
 
 ## Que necesitamos para esta implementación?
 
-- Maquinas virtuales que nos sirvan como nodos
+- Maquinas virtuales
 
 
 ## Primeros pasos
 
-### Instalar Microk8s vía snap
+### 1. Instalar Microk8s vía snap
 
 ```bash
 sudo snap install microk8s --classic
+```
+### 2. Habilitar addons de Microk8s
+
+```bash
+microk8s enable dns dashboard storage
+```
+
+### 3. Verificar que servicios y pods esten corriendo
+
+```bash
+kubectl get all --all-namespaces
+```
+
+### 4. Agregar nodos
+
+```bash
+microk8s add-node
+```
+
+Al correr el comando aparecera algo como esto:
+
+```bash
+From the node you wish to join to this cluster, run the following:
+microk8s join 192.168.1.230:25000/92b2db237428470dc4fcfc4ebbd9dc81/2c0cb3284b05
+
+Use the '--worker' flag to join a node as a worker not running the control plane, eg:
+microk8s join 192.168.1.230:25000/92b2db237428470dc4fcfc4ebbd9dc81/2c0cb3284b05 --worker
+
+If the node you are adding is not reachable through the default interface you can use one of the following:
+microk8s join 192.168.1.230:25000/92b2db237428470dc4fcfc4ebbd9dc81/2c0cb3284b05
+microk8s join 10.23.209.1:25000/92b2db237428470dc4fcfc4ebbd9dc81/2c0cb3284b05
+microk8s join 172.17.0.1:25000/92b2db237428470dc4fcfc4ebbd9dc81/2c0cb3284b05
+```
+
+en nuestro ###nodo worker### debemos correr el comando generado "microk8s join" para poder unir el worker al master, cabe destacar que hay añadir la etiqueta "--worker"
+
+microk8s join 192.168.1.230:25000/92b2db237428470dc4fcfc4ebbd9dc81/2c0cb3284b05 --worker
+
+
+
+### -Opcional-  Acceder al dashboard
+```bash
+microk8s dashboard-proxy
 ```
